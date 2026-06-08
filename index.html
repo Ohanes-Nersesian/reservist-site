@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-Постер Касса v2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-left-block">
+        <div class="location-selector" style="padding: 15px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px;">
+            <label for="point-select" style="font-weight: bold; font-family: sans-serif; color: #374151;">Поточна локація:</label>
+            <select id="point-select" style="padding: 8px 12px; font-size: 14px; border-radius: 6px; border: 1px solid #d1d5db; background: white; cursor: pointer;" onchange="updateLocation()">
+                <option value="CQB арена">CQB Арена</option>
+                <option value="Відкрита гра">Відкрита гра</option>
+            </select>
+        </div>
+
+        <div class="products" id="products-grid"></div>
+    </div>
+
+    <div class="checkout">
+        <div class="checkout-header">
+            <h3 style="color: #000000;">Поточний чек</h3>
+        </div>
+        
+        <div id="cart-items">
+            <p style="color:#000000; text-align: center; margin-top: 20px;">Чек порожній</p>
+        </div>
+        
+        <div>
+            <div class="payment-methods">
+                <p>Форма оплати:</p>
+                <label>
+                    <input type="radio" name="pay-method" value="Готівка" checked> 
+                    Готівка
+                </label>
+                <label>
+                    <input type="radio" name="pay-method" value="Картка"> 
+                    Картка
+                </label>
+            </div>
+
+            <div class="total-block">
+                <span>Всього:</span>
+                <span><span id="total">0</span> грн</span>
+            </div>
+            
+            <button class="pay-btn" id="pay-btn" onclick="sendToGoogle()" disabled>Оплатити замовлення</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
