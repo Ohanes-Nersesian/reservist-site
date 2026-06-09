@@ -28,7 +28,17 @@ body {
 
 /* Панель вибору локації */
 .location-selector {
-    flex-shrink: 0; /* Меню не повинно стискатися */
+    position: relative; /* Тепер цей блок стає рамкою, за яку картинка не вийде */
+    padding-right: 180px; /* Захисний відступ справа, щоб довгий текст не заліз під логотип */
+}
+
+/* Приклеюємо логотип до правого краю всередині цього блоку */
+.location-selector img {
+    position: absolute;
+    right: 20px;       /* Відступ від правого внутрішнього краю блоку */
+    top: 50%;          /* Зсуваємо на центр по вертикалі */
+    transform: translateY(-50%); /* Ідеально вирівнюємо по центру по вертикалі */
+    height: 35px;      /* Акуратна висота лого */
 }
 
 /* Ліва частина - каталог товарів */
@@ -57,7 +67,7 @@ body {
 }
 
 .card:hover { 
-    border-color: #4F46E5; 
+    border-color: #a93c33; 
     background: #EEF2F6; 
 }
 
@@ -171,15 +181,15 @@ body {
 .payment-methods input[type="radio"] {
     width: 16px;
     height: 16px;
-    accent-color: #4F46E5;
+    accent-color: #a93c33;
 }
 
 .total-block {
-    font-size: 1.4rem;
+    font-size: 1.0rem;
     font-weight: bold;
     display: flex;
     justify-content: space-between;
-    color: #ffffff;
+    color: #000000;
     margin-bottom: 15px;
 }
 
@@ -215,7 +225,7 @@ button.pay-btn:disabled {
         height: auto;           
         padding: 10px;          
         gap: 15px;
-        overflow: auto; /* Дозволяємо скрол на мобілках */
+        overflow: auto; 
     }
 
     .main-left-block {
@@ -225,7 +235,7 @@ button.pay-btn:disabled {
 
     .products {
         height: auto;           
-        max-height: 50vh;       
+        max-height: 45vh;       
         padding: 10px;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
         gap: 10px;
@@ -238,33 +248,57 @@ button.pay-btn:disabled {
         font-size: 13px;        
     }
 
+    /* Права частина - поточний чек */
     .checkout {
         height: auto;           
         min-width: 100%;        
-        padding: 15px;
-        margin-bottom: 80px;    
+        padding: 12px;
+        /* КРИТИЧНО ВАЖЛИВО: збільшуємо відступ знизу, щоб товари не перекривалися */
+        margin-bottom: 180px;    
     }
 
     #cart-items {
-        max-height: 300px;      
+        max-height: 350px;      
         overflow-y: auto;
     }
 
+    /* Компактніші рядки товарів для мобілок */
+    .item {
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .qty-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        margin: 2px 2px 0 2px;
+    }
+
+    .del-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+        margin-left: 5px;
+    }
+
+    /* Нижня панель-приліпайка */
     .checkout > div:last-child {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
         background: white;
-        padding: 15px;
-        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        padding: 12px 15px;
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.15);
         border-radius: 16px 16px 0 0; 
         z-index: 1000;
     }
 
     .payment-methods {
-        margin-bottom: 10px;
-        padding: 8px;
+        margin-bottom: 8px;
+        padding: 6px 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -275,12 +309,12 @@ button.pay-btn:disabled {
     }
 
     .total-block {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
     }
 
     button.pay-btn {
-        padding: 12px;
+        padding: 10px;
         font-size: 15px;
     }
 }

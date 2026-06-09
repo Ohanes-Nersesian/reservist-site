@@ -10,19 +10,37 @@
 
     <div class="main-left-block">
         <div class="location-selector" style="padding: 15px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px;">
-            <label for="point-select" style="font-weight: bold; font-family: sans-serif; color: #374151;">Поточна локація:</label>
+            <label for="point-select" style="font-weight: bold; font-family: sans-serif; color: #374151;">Локація:</label>
             <select id="point-select" style="padding: 8px 12px; font-size: 14px; border-radius: 6px; border: 1px solid #d1d5db; background: white; cursor: pointer;" onchange="updateLocation()">
                 <option value="CQB арена">CQB Арена</option>
                 <option value="Відкрита гра">Відкрита гра</option>
+                <option value="Open Storm">Open Storm</option>
             </select>
+            <img src="/img/logo1.svg" alt="Location Icon" style="width: 100px;">
+        </div>
+
+        <div class="category-menu" id="category-tabs" style="padding: 10px 15px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; gap: 10px; overflow-x: auto;">
         </div>
 
         <div class="products" id="products-grid"></div>
     </div>
 
     <div class="checkout">
-        <div class="checkout-header">
-            <h3 style="color: #000000;">Поточний чек</h3>
+        <div class="checkout-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #000000; margin: 0;">Поточний чек</h3>
+            <button onclick="clearCart()" style="
+                background: #ef4444; 
+                color: white; 
+                border: none; 
+                padding: 6px 12px; 
+                border-radius: 6px; 
+                font-size: 12px; 
+                font-weight: 600; 
+                cursor: pointer;
+                transition: background 0.2s;
+            " onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
+                Очистити
+            </button>
         </div>
         
         <div id="cart-items">

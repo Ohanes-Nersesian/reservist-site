@@ -1,13 +1,10 @@
 // ==========================================
 // 1. НАЛАШТУВАННЯ СИНХРОНІЗАЦІЇ
 // ==========================================
-// Твоя актуальна адреса веб-додатка Google Apps Script
-const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxluqYrmKHPnzGAHef0XPr8d-Oet2ux9v8vZs7QkjYWNPyIOVfm52xW31-x3FLduoe6/exec";
+const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbwXmcVIAUmRFK8y1jctDDId6v_Gz4TXd2F3ebL3VDrqKMdvY8qps_r6icdLD5HbXAJE/exec";
 
-// Змінна, яка динамічно зберігає вибрану точку (за замовчуванням CQB арена)
 let CURRENT_LOCATION = "CQB арена";
 
-// Функція перемикання локації (спрацьовує при зміні у випадаючому списку)
 function updateLocation() {
     const select = document.getElementById('point-select');
     if (select) {
@@ -16,35 +13,113 @@ function updateLocation() {
 }
 
 // ==========================================
-// 2. КАТАЛОГ ТОВАРІВ
+// 2. КАТАЛОГ ТОВАРІВ З КАТЕГОРІЯМИ
 // ==========================================
 const products = [
-    { id: 1, name: "Пачка куль", price: 200 },
-    { id: 2, name: "Граната Картон", price: 80 },
-    { id: 3, name: "Граната з Чикою", price: 140 },
-    { id: 4, name: "Солодка вода", price: 40 },
-    { id: 5, name: "Вода мінеральна ", price: 20 },
-    { id: 6, name: "Енергетик", price: 50 },
-    { id: 7, name: "Снікерс", price: 50 },
-    { id: 8, name: "Батончик", price: 30 },
+    { id: 1, name: "Пачка куль", price: 200, category: "Доп.продаж" },
+    { id: 2, name: "Граната Картон", price: 80, category: "Доп.продаж" },
+    { id: 3, name: "Граната з Чикою", price: 140, category: "Доп.продаж" },
+    { id: 4, name: "Заряди ВОГ", price: 80, category: "Доп.продаж" },
+    { id: 5, name: "Солодка вода", price: 40, category: "Напої/Їжа" },
+    { id: 6, name: "Вода мінеральна ", price: 20, category: "Напої/Їжа" },
+    { id: 7, name: "Енергетик", price: 50, category: "Напої/Їжа" },
+    { id: 8, name: "Снікерс", price: 50, category: "Напої/Їжа" },
+    { id: 9, name: "Батончик", price: 30, category: "Напої/Їжа" }, 
+    { id: 10, name: "Комплект захисту коліна+лікті", price: 180, category: "Оренда" },
+    { id: 11, name: "Шолом страйкбольний", price: 200, category: "Оренда" },
+    { id: 12, name: "Плитоноска з імітацією плит", price: 200, category: "Оренда" },
+    { id: 13, name: "Форма", price: 250, category: "Оренда" },
+    { id: 14, name: "Окуляри сітка", price: 80, category: "Оренда" },
+    { id: 15, name: "Маска", price: 80, category: "Оренда" },
+    { id: 16, name: "Варблет/РПС", price: 150, category: "Оренда" },
+    { id: 17, name: "Привод", price: 400, category: "Оренда" },
+    { id: 18, name: "Акумулятори 7.4v", price: 100, category: "Оренда" },
+    { id: 19, name: "Механічний/бункерний магазин)", price: 80, category: "Оренда" }
 ];
 
+// Словник фірмових кольорів для твоїх категорій
+const categoryColors = {
+    "Всі": "#a93c33",         
+    "Доп.продаж": "#083a8b",  
+    "Напої/Їжа": "#0d885f",   
+    "Оренда": "#bd8e00"       
+};
+
+let CURRENT_CATEGORY = "Всі";
 let cart = [];
 
 // ==========================================
-// 3. ЛОГІКА ІНТЕРФЕЙСУ ТА КОШИКА
+// 3. ЛОГІКА ІНТЕРФЕЙСУ ТА КАТЕГОРІЙ
 // ==========================================
 
-// Генерація карток товарів на екрані
+// Створення кнопок категорій на екрані з індивідуальним підсвічуванням
+function renderCategories() {
+    const container = document.getElementById('category-tabs');
+    if (!container) return;
+
+    const categories = ["Всі", ...new Set(products.map(p => p.category))];
+
+    container.innerHTML = '';
+    categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.innerText = cat;
+        
+        btn.style.padding = "8px 16px";
+        btn.style.border = "1px solid #d1d5db";
+        btn.style.borderRadius = "20px";
+        btn.style.cursor = "pointer";
+        btn.style.fontWeight = "600";
+        btn.style.fontSize = "14px";
+        btn.style.transition = "all 0.2s";
+        
+        const activeColor = categoryColors[cat] || "#6B7280";
+
+        if (cat === CURRENT_CATEGORY) {
+            btn.style.background = activeColor;
+            btn.style.color = "white";
+            btn.style.borderColor = activeColor;
+        } else {
+            btn.style.background = "white";
+            btn.style.color = "#323232";
+            btn.style.borderColor = "#d1d5db";
+        }
+
+        btn.onclick = () => {
+            CURRENT_CATEGORY = cat;
+            renderCategories(); 
+            renderProducts();   
+        };
+
+        container.appendChild(btn);
+    });
+}
+
+// Відображення товарів без іконок, але з тонким колірним акцентом зліва
 function renderProducts() {
     const container = document.getElementById('products-grid');
     if (!container) return;
     
     container.innerHTML = '';
-    products.forEach(prod => {
+    
+    const filteredProducts = CURRENT_CATEGORY === "Всі" 
+        ? products 
+        : products.filter(p => p.category === CURRENT_CATEGORY);
+
+    filteredProducts.forEach(prod => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<b>${prod.name}</b><br><span>${prod.price} грн</span>`;
+        
+        const borderColor = categoryColors[prod.category] || "#e5e7eb";
+        
+        card.style.borderLeft = `5px solid ${borderColor}`;
+        card.style.textAlign = "left";
+        card.style.paddingLeft = "15px";
+        
+        card.innerHTML = `
+            <b style="color: #1f2937; display: block; margin-bottom: 5px;">${prod.name}</b>
+            <span style="color: #4b5563; font-weight: 500;">${prod.price} грн</span>
+        `;
+        
         card.onclick = () => addToCart(prod);
         container.appendChild(card);
     });
@@ -73,13 +148,23 @@ function changeQty(id, delta) {
     updateUI();
 }
 
-// Видалення позиції з чеку через хрестик
+// Видалення позиції з чеку
 function removeFromCart(id) {
     cart = cart.filter(i => i.id !== id);
     updateUI();
 }
 
-// Перерахунок суми та оновлення відображення чеку
+// Повне очищення поточного чека
+function clearCart() {
+    if (cart.length === 0) return; 
+    
+    if (confirm("Ви впевнені, що хочете повністю очистити поточний чек?")) {
+        cart = [];  
+        updateUI(); 
+    }
+}
+
+// Перерахунок суми
 function updateUI() {
     const cartContainer = document.getElementById('cart-items');
     const totalEl = document.getElementById('total');
@@ -87,7 +172,6 @@ function updateUI() {
     
     if (!cartContainer || !totalEl) return;
 
-    // Якщо чек порожній
     if (cart.length === 0) {
         cartContainer.innerHTML = `<p style="color:#9ca3af; text-align: center; margin-top: 20px;">Чек порожній</p>`;
         totalEl.innerText = '0';
@@ -95,7 +179,6 @@ function updateUI() {
         return;
     }
 
-    // Якщо в чеку є товари
     cartContainer.innerHTML = '';
     let total = 0;
 
@@ -135,10 +218,8 @@ function sendToGoogle() {
     const btn = document.getElementById('pay-btn');
     if (btn) { btn.disabled = true; btn.innerText = "Обробка..."; }
 
-    // Зчитуємо спосіб оплати (Готівка чи Картка)
     const payMethod = document.querySelector('input[name="pay-method"]:checked').value;
 
-    // Пакуємо кошик разом із поточною вибраною точкою
     const packet = {
         cart: cart,
         payMethod: payMethod,
@@ -164,6 +245,7 @@ function sendToGoogle() {
 
 // Ініціалізація системи при завантаженні сторінки
 window.onload = () => {
-    renderProducts();
+    renderCategories(); 
+    renderProducts();   
     updateUI();
 };
